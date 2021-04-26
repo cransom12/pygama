@@ -464,7 +464,7 @@
         <span class="c1"># works well for high stats </span>
         <span class="k">if</span> <span class="n">bin_lo</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">bin_hi</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;get_fwhm: can&#39;t interpolate (</span><span class="si">{</span><span class="n">bin_lo</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">bin_hi</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="mi">0</span>
+            <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
 
         <span class="n">val_f</span> <span class="o">=</span> <span class="n">bl</span> <span class="o">+</span> <span class="n">fraction</span><span class="o">*</span><span class="p">(</span><span class="n">mx</span><span class="o">-</span><span class="n">bl</span><span class="p">)</span>
 
@@ -523,7 +523,7 @@
 
     <span class="k">else</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;get_fwhm: unrecognized method </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="mi">0</span></div>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span></div>
 
 
 <div class="viewcode-block" id="plot_hist"><a class="viewcode-back" href="../../../pygama.analysis.html#pygama.analysis.histograms.plot_hist">[docs]</a><span class="k">def</span> <span class="nf">plot_hist</span><span class="p">(</span><span class="n">hist</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_stats</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">stats_hloc</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="n">stats_vloc</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
