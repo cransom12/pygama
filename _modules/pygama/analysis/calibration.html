@@ -630,13 +630,15 @@
         <span class="c1"># its the best so far</span>
         <span class="n">matches</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">polxx</span><span class="p">,</span> <span class="n">yy_i</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">)</span>
         <span class="n">n_close_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">n_close_i</span> <span class="o">&gt;=</span> <span class="n">n_close_i</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n_close_i</span> <span class="o">&gt;=</span> <span class="n">n_close</span><span class="p">:</span>
             <span class="n">gof_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">polxx</span><span class="p">[</span><span class="n">matches</span><span class="p">]</span> <span class="o">-</span> <span class="n">yy_i</span><span class="p">[</span><span class="n">matches</span><span class="p">],</span> <span class="mi">2</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">n_close_i</span> <span class="o">&gt;</span> <span class="n">n_close</span> <span class="ow">or</span> <span class="p">(</span><span class="n">n_close_i</span> <span class="o">==</span> <span class="n">n_close</span> <span class="ow">and</span> <span class="n">gof_i</span> <span class="o">&lt;</span> <span class="n">gof</span><span class="p">):</span>
                 <span class="n">i_matches</span> <span class="o">=</span> <span class="n">ixtup</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">matches</span><span class="p">)]</span>
                 <span class="n">n_close</span> <span class="o">=</span> <span class="n">n_close_i</span>
                 <span class="n">gof</span> <span class="o">=</span> <span class="n">gof_i</span>
                 <span class="n">pars</span> <span class="o">=</span> <span class="n">pars_i</span>
+                <span class="n">best_ixtup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">ixtup</span><span class="p">)</span>
+                <span class="n">best_iytup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">iytup</span><span class="p">)</span>
 
         <span class="c1"># increment ixtup</span>
         <span class="c1"># first find the index of ixtup that needs to be incremented</span>
@@ -684,8 +686,7 @@
         <span class="n">n_close</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">gof</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
 
-
-    <span class="k">return</span> <span class="n">pars</span><span class="p">,</span> <span class="n">ixtup</span><span class="p">,</span> <span class="n">iytup</span></div>
+    <span class="k">return</span> <span class="n">pars</span><span class="p">,</span> <span class="n">best_ixtup</span><span class="p">,</span> <span class="n">best_iytup</span></div>
 
 
 <div class="viewcode-block" id="get_i_local_extrema"><a class="viewcode-back" href="../../../pygama.analysis.html#pygama.analysis.calibration.get_i_local_extrema">[docs]</a><span class="k">def</span> <span class="nf">get_i_local_extrema</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">delta</span><span class="p">):</span>
