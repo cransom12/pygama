@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -299,6 +302,7 @@
     <span class="c1"># x_hi is valid. Get a valid dx if we don&#39;t have one</span>
     <span class="k">if</span> <span class="n">dx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># must have n_bins</span>
         <span class="n">dx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">((</span><span class="n">x_hi</span><span class="o">-</span><span class="n">x_lo</span><span class="p">)</span><span class="o">/</span><span class="n">n_bins</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="n">dx</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="c1"># Finally, build a good binning from dx</span>
     <span class="n">n_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">x_hi</span><span class="o">-</span><span class="n">x_lo</span><span class="p">)</span><span class="o">/</span><span class="n">dx</span><span class="p">)</span>
@@ -433,7 +437,7 @@
         <span class="n">mx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">var</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">dmx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> 
             <span class="n">dmx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">var</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">hist</span><span class="p">)])</span>
-    <span class="n">idxs_over_f</span> <span class="o">=</span> <span class="n">hist</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">bl</span> <span class="o">+</span> <span class="n">fraction</span> <span class="o">*</span> <span class="n">mx</span><span class="p">)</span>
+    <span class="n">idxs_over_f</span> <span class="o">=</span> <span class="n">hist</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">bl</span> <span class="o">+</span> <span class="n">fraction</span> <span class="o">*</span> <span class="p">(</span><span class="n">mx</span><span class="o">-</span><span class="n">bl</span><span class="p">))</span>
 
     <span class="c1"># argmax will return the index of the first occurence of a maximum</span>
     <span class="c1"># so we can use it to find the first and last time idxs_over_f is &quot;True&quot;</span>
@@ -484,6 +488,9 @@
         <span class="n">dx</span> <span class="o">=</span> <span class="n">bin_centers</span><span class="p">[</span><span class="n">bin_hi</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">bin_centers</span><span class="p">[</span><span class="n">bin_hi</span><span class="p">]</span>
         <span class="n">dhf</span> <span class="o">=</span> <span class="n">hist</span><span class="p">[</span><span class="n">bin_hi</span><span class="p">]</span> <span class="o">-</span> <span class="n">val_f</span>
         <span class="n">dh</span> <span class="o">=</span> <span class="n">hist</span><span class="p">[</span><span class="n">bin_hi</span><span class="p">]</span> <span class="o">-</span> <span class="n">hist</span><span class="p">[</span><span class="n">bin_hi</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">dh</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;get_fwhm: interpolation failed, dh == 0&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
         <span class="n">x_hi</span> <span class="o">=</span> <span class="n">bin_centers</span><span class="p">[</span><span class="n">bin_hi</span><span class="p">]</span> <span class="o">+</span> <span class="n">dx</span> <span class="o">*</span> <span class="n">dhf</span><span class="o">/</span><span class="n">dh</span> 
         <span class="c1"># uncertainty</span>
         <span class="n">dx2_hi</span> <span class="o">=</span> <span class="mi">0</span>
