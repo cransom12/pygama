@@ -213,6 +213,11 @@ cal_peaks: array of peaks to fit</p>
 <dd></dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="pygama.analysis.calibration.get_hpge_E_peak_bounds">
+<span class="sig-prename descclassname"><span class="pre">pygama.analysis.calibration.</span></span><span class="sig-name descname"><span class="pre">get_hpge_E_peak_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars_guess</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygama/analysis/calibration.html#get_hpge_E_peak_bounds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygama.analysis.calibration.get_hpge_E_peak_bounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="pygama.analysis.calibration.get_hpge_E_peak_par_guess">
 <span class="sig-prename descclassname"><span class="pre">pygama.analysis.calibration.</span></span><span class="sig-name descname"><span class="pre">get_hpge_E_peak_par_guess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygama/analysis/calibration.html#get_hpge_E_peak_par_guess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygama.analysis.calibration.get_hpge_E_peak_par_guess" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get parameter guesses for func fit to peak in hist</p>
@@ -278,7 +283,7 @@ return a histogram around the most prominent peak in a spectrum of a given perce
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pygama.analysis.calibration.hpge_E_calibration">
-<span class="sig-prename descclassname"><span class="pre">pygama.analysis.calibration.</span></span><span class="sig-name descname"><span class="pre">hpge_E_calibration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E_uncal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peaks_keV</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guess_keV</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uncal_is_int</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygama/analysis/calibration.html#hpge_E_calibration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygama.analysis.calibration.hpge_E_calibration" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pygama.analysis.calibration.</span></span><span class="sig-name descname"><span class="pre">hpge_E_calibration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">E_uncal</span></em>, <em class="sig-param"><span class="pre">peaks_keV</span></em>, <em class="sig-param"><span class="pre">guess_keV</span></em>, <em class="sig-param"><span class="pre">deg=0</span></em>, <em class="sig-param"><span class="pre">uncal_is_int=False</span></em>, <em class="sig-param"><span class="pre">range_keV=None</span></em>, <em class="sig-param"><span class="pre">funcs=&lt;function</span> <span class="pre">gauss_step&gt;</span></em>, <em class="sig-param"><span class="pre">verbose=True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygama/analysis/calibration.html#hpge_E_calibration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygama.analysis.calibration.hpge_E_calibration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calibrate HPGe data to a set of known peaks</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -292,6 +297,8 @@ deg = 0 corresponds to a simple scaling E_keV = scale * E_uncal.
 Otherwise follows the convention in np.polyfit</p></li>
 <li><p><strong>uncal_is_int</strong> (<em>bool</em>) -- if True, attempts will be made to avoid picket-fencing when binning
 E_uncal</p></li>
+<li><p><strong>range_keV</strong> (<em>float</em><em>, </em><em>tuple</em><em>, </em><em>array of floats</em><em>, or </em><em>array of tuples of floats</em>) -- ranges around which the peak fitting is performed
+if tuple(s) are supplied, they provide the left and right ranges</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -302,7 +309,7 @@ overwhelmingly dominated by the linear term. pars follows convention in
 np.polyfit unless deg=0, in which case it is the (lone) scale factor</p></li>
 <li><p><strong>results</strong> (<em>dict with the following elements</em>) --</p>
 <dl class="simple">
-<dt>'matches'<span class="classifier">array</span></dt><dd><p>array of rough uncalibrated energies at which the fit peaks were
+<dt>'detected_peaks_locs', 'detected_peaks_keV'<span class="classifier">array, array</span></dt><dd><p>array of rough uncalibrated/calibrated energies at which the fit peaks were
 found in the initial peak search</p>
 </dd>
 <dt>'pt_pars', 'pt_cov'<span class="classifier">list of (array), list of (2D array)</span></dt><dd><p>arrays of gaussian parameters / covariances fit to the peak tops in
@@ -311,7 +318,7 @@ the first refinement</p>
 <dt>'pt_cal_pars', 'pt_cal_cov'<span class="classifier">array, 2D array</span></dt><dd><p>array of calibraiton parameters E_uncal = poly(E_keV) for fit to
 means of gausses fit to tops of each peak</p>
 </dd>
-<dt>'pk_pars', 'pk_cov'<span class="classifier">list of (array), list of (2D array)</span></dt><dd><p>the best fit parameters and covariances for the local fit to each peak</p>
+<dt>'pk_pars', 'pk_cov', 'pk_binws', 'pk_ranges'<span class="classifier">list of (array), list of (2D array), list, list of (array)</span></dt><dd><p>the best fit parameters, covariances, bin width and energy range for the local fit to each peak</p>
 </dd>
 <dt>'pk_cal_pars', 'pk_cal_cov'<span class="classifier">array, 2D array</span></dt><dd><p>array of calibraiton parameters E_uncal = poly(E_keV) for fit to
 means from full peak fits</p>
@@ -328,7 +335,7 @@ means from full peak fits</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pygama.analysis.calibration.hpge_find_E_peaks">
-<span class="sig-prename descclassname"><span class="pre">pygama.analysis.calibration.</span></span><span class="sig-name descname"><span class="pre">hpge_find_E_peaks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peaks_keV</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Etol_keV</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_zero</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbosity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygama/analysis/calibration.html#hpge_find_E_peaks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygama.analysis.calibration.hpge_find_E_peaks" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pygama.analysis.calibration.</span></span><span class="sig-name descname"><span class="pre">hpge_find_E_peaks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peaks_keV</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Etol_keV</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_zero</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygama/analysis/calibration.html#hpge_find_E_peaks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygama.analysis.calibration.hpge_find_E_peaks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find uncalibrated E peaks whose E spacing matches the pattern in peaks_keV</p>
 <p>Note: the specialization here to units &quot;keV&quot; in peaks and Etol is
 unnecessary. However it is kept so that the default value for Etol_keV has
@@ -419,7 +426,7 @@ mu = scale * E. Otherwise deg follows the definition in np.polyfit</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pygama.analysis.calibration.hpge_fit_E_peaks">
-<span class="sig-prename descclassname"><span class="pre">pygama.analysis.calibration.</span></span><span class="sig-name descname"><span class="pre">hpge_fit_E_peaks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">E_uncal</span></em>, <em class="sig-param"><span class="pre">mode_guesses</span></em>, <em class="sig-param"><span class="pre">wwidths</span></em>, <em class="sig-param"><span class="pre">n_bins=50</span></em>, <em class="sig-param"><span class="pre">funcs=&lt;function</span> <span class="pre">gauss_step&gt;</span></em>, <em class="sig-param"><span class="pre">uncal_is_int=False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygama/analysis/calibration.html#hpge_fit_E_peaks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygama.analysis.calibration.hpge_fit_E_peaks" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pygama.analysis.calibration.</span></span><span class="sig-name descname"><span class="pre">hpge_fit_E_peaks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">E_uncal</span></em>, <em class="sig-param"><span class="pre">mode_guesses</span></em>, <em class="sig-param"><span class="pre">wwidths</span></em>, <em class="sig-param"><span class="pre">n_bins=50</span></em>, <em class="sig-param"><span class="pre">funcs=&lt;function</span> <span class="pre">gauss_step&gt;</span></em>, <em class="sig-param"><span class="pre">uncal_is_int=False</span></em>, <em class="sig-param"><span class="pre">getbounds=True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygama/analysis/calibration.html#hpge_fit_E_peaks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygama.analysis.calibration.hpge_fit_E_peaks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit gaussians to the tops of peaks</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -432,12 +439,15 @@ typically on the order of 10 sigma where sigma is the peak width</p></li>
 <li><p><strong>funcs</strong> (<em>function</em><em> or </em><em>array of functions</em>) -- funcs to be used to fit each region</p></li>
 <li><p><strong>uncal_is_int</strong> (<em>bool</em>) -- if True, attempts will be made to avoid picket-fencing when binning
 E_uncal</p></li>
+<li><p><strong>getbounds</strong> (<em>bool</em><em> or </em><em>array of bools determining whether to pass bounds</em>) -- to scipy.optimize.minimize via pgf.fit_hist for each peak</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>pars</strong> (<em>list of array</em>) -- a list of best-fit parameters for each peak fit</p></li>
 <li><p><strong>covs</strong> (<em>list of 2D arrays</em>) -- a list of covariance matrices for each pars</p></li>
+<li><p><strong>binwidths</strong> (<em>list</em>) -- a list of bin widths used for each peak fit</p></li>
+<li><p><strong>ranges</strong> (<em>list of array</em>) -- a list of [Euc_min, Euc_max] used for each peak fit</p></li>
 </ul>
 </p>
 </dd>
@@ -463,6 +473,39 @@ mu = scale * E. Otherwise deg follows the definition in np.polyfit</p></li>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>pars</strong> (<em>array</em>) -- parameters of the best fit. Follows the convention in np.polyfit</p></li>
 <li><p><strong>cov</strong> (<em>2D array</em>) -- covariance matrix for the best fit parameters.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygama.analysis.calibration.hpge_get_E_peaks">
+<span class="sig-prename descclassname"><span class="pre">pygama.analysis.calibration.</span></span><span class="sig-name descname"><span class="pre">hpge_get_E_peaks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cal_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peaks_keV</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Etol_keV</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_zero</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygama/analysis/calibration.html#hpge_get_E_peaks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygama.analysis.calibration.hpge_get_E_peaks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get uncalibrated E peaks at the energies of peaks_keV</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hist</strong> (<em>array</em><em>, </em><em>array</em><em>, </em><em>array</em>) -- Histogram of uncalibrated energies, see pgh.get_hist()
+var cannot contain any zero entries.</p></li>
+<li><p><strong>bins</strong> (<em>array</em><em>, </em><em>array</em><em>, </em><em>array</em>) -- Histogram of uncalibrated energies, see pgh.get_hist()
+var cannot contain any zero entries.</p></li>
+<li><p><strong>var</strong> (<em>array</em><em>, </em><em>array</em><em>, </em><em>array</em>) -- Histogram of uncalibrated energies, see pgh.get_hist()
+var cannot contain any zero entries.</p></li>
+<li><p><strong>cal_pars</strong> (<em>array</em>) -- Estimated energy calibration parameters used to search for peaks</p></li>
+<li><p><strong>peaks_keV</strong> (<em>array</em>) -- Energies of peaks to search for (in keV)</p></li>
+<li><p><strong>n_sigma</strong> (<em>float</em>) -- Threshold for detecting a peak in sigma (i.e. sqrt(var))</p></li>
+<li><p><strong>Etol_keV</strong> (<em>float</em>) -- absolute tolerance in energy for matching peaks</p></li>
+<li><p><strong>var_zero</strong> (<em>float</em>) -- number used to replace zeros of var to avoid divide-by-zero in
+hist/sqrt(var). Default value is 1. Usually when var = 0 its because
+hist = 0, and any value here is fine.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>got_peak_locations</strong> (<em>list</em>) -- list of uncalibrated energies of found peaks</p></li>
+<li><p><strong>got_peak_energies</strong> (<em>list</em>) -- list of calibrated energies of found peaks</p></li>
+<li><p><strong>pars</strong> (<em>list of floats</em>) -- the parameters for poly(peaks_uncal) = peaks_keV (polyfit convention)</p></li>
 </ul>
 </p>
 </dd>
@@ -1133,6 +1176,13 @@ it here.</p>
 <dt class="sig sig-object py" id="pygama.analysis.peak_fitting.poly">
 <span class="sig-prename descclassname"><span class="pre">pygama.analysis.peak_fitting.</span></span><span class="sig-name descname"><span class="pre">poly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygama/analysis/peak_fitting.html#poly"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygama.analysis.peak_fitting.poly" title="Permalink to this definition">¶</a></dt>
 <dd><p>A polynomial function with pars following the polyfit convention</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygama.analysis.peak_fitting.radford_fwhm">
+<span class="sig-prename descclassname"><span class="pre">pygama.analysis.peak_fitting.</span></span><span class="sig-name descname"><span class="pre">radford_fwhm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">htail</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygama/analysis/peak_fitting.html#radford_fwhm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygama.analysis.peak_fitting.radford_fwhm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the FWHM of the radford_peak function, ignoring background and
+step components. TODO: also get the uncertainty</p>
 </dd></dl>
 
 <dl class="py function">
