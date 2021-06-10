@@ -170,10 +170,7 @@
 <span class="kn">import</span> <span class="nn">pygama.analysis.peak_fitting</span> <span class="k">as</span> <span class="nn">pgf</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">matplotlib.gridspec</span> <span class="k">as</span> <span class="nn">gs</span>
-<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">argrelextrema</span><span class="p">,</span> <span class="n">medfilt</span><span class="p">,</span> <span class="n">find_peaks_cwt</span>
-<span class="kn">from</span> <span class="nn">scipy.ndimage.filters</span> <span class="kn">import</span> <span class="n">gaussian_filter1d</span>
-<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span>
-<span class="kn">import</span> <span class="nn">scipy.optimize</span> <span class="k">as</span> <span class="nn">op</span>
+<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">medfilt</span><span class="p">,</span> <span class="n">find_peaks_cwt</span>
 
 <div class="viewcode-block" id="hpge_find_E_peaks"><a class="viewcode-back" href="../../../pygama.analysis.html#pygama.analysis.calibration.hpge_find_E_peaks">[docs]</a><span class="k">def</span> <span class="nf">hpge_find_E_peaks</span><span class="p">(</span><span class="n">hist</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">peaks_keV</span><span class="p">,</span> <span class="n">n_sigma</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Etol_keV</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">var_zero</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Find uncalibrated E peaks whose E spacing matches the pattern in peaks_keV</span>
@@ -355,6 +352,7 @@
         <span class="c1"># get mu and hieght from a gaus fit</span>
         <span class="n">pars</span><span class="p">,</span> <span class="n">cov</span> <span class="o">=</span> <span class="n">pgf</span><span class="o">.</span><span class="n">gauss_mode_max</span><span class="p">(</span><span class="n">hist</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">pars</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;get_hpge_E_peak_par_guess: gauss_mode_max failed&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">[]</span>
         <span class="n">mu</span> <span class="o">=</span> <span class="n">pars</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">height</span> <span class="o">=</span> <span class="n">pars</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -369,20 +367,95 @@
             <span class="k">if</span> <span class="n">sigma</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="n">sigma</span> <span class="o">=</span> <span class="n">pgh</span><span class="o">.</span><span class="n">get_fwfm</span><span class="p">(</span><span class="mf">0.6065</span><span class="p">,</span> <span class="n">hist</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">mx</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="n">bl</span><span class="o">=</span><span class="n">bg</span><span class="o">+</span><span class="n">step</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;fit_slopes&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">sigma</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;get_hpge_E_peak_par_guess: sigma estimation failed&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">sigma</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;get_hpge_E_peak_par_guess: sigma estimation failed&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="p">[]</span>
 
         <span class="c1"># now compute amp and return</span>
         <span class="n">height</span> <span class="o">-=</span> <span class="p">(</span><span class="n">bg</span> <span class="o">+</span> <span class="n">step</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">amp</span> <span class="o">=</span> <span class="n">height</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">amp</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">bg</span><span class="p">,</span> <span class="n">step</span><span class="p">]</span>
 
+    <span class="k">if</span> <span class="n">func</span> <span class="o">==</span> <span class="n">pgp</span><span class="o">.</span><span class="n">radford_peak_wrapped</span><span class="p">:</span>
+        <span class="c1"># pars are: mu, sigma, hstep, htail, tau, bg0, amp</span>
+        <span class="c1"># get mu and height from a gaus fit</span>
+        <span class="c1">#pars, cov = pgf.gauss_mode_max(hist, bins, var)</span>
+
+        <span class="c1">#guess mu, height</span>
+        <span class="n">i_0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">pgh</span><span class="o">.</span><span class="n">get_bin_centers</span><span class="p">(</span><span class="n">bins</span><span class="p">)[</span><span class="n">i_0</span><span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">hist</span><span class="p">[</span><span class="n">i_0</span><span class="p">]</span>
+
+        <span class="c1"># get bg and step from edges of hist</span>
+        <span class="n">bg0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">hist</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">:])</span><span class="o">/</span><span class="mi">5</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">hist</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span><span class="o">/</span><span class="mi">5</span> <span class="o">-</span> <span class="n">bg0</span>
+
+        <span class="c1"># get sigma from fwfm with f = 1/sqrt(e)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sigma</span> <span class="o">=</span> <span class="n">pgh</span><span class="o">.</span><span class="n">get_fwfm</span><span class="p">(</span><span class="mf">0.6065</span><span class="p">,</span> <span class="n">hist</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">mx</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="n">bl</span><span class="o">=</span><span class="n">bg0</span><span class="o">+</span><span class="n">step</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;interpolate&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">sigma</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">sigma</span> <span class="o">=</span> <span class="n">pgh</span><span class="o">.</span><span class="n">get_fwfm</span><span class="p">(</span><span class="mf">0.6065</span><span class="p">,</span> <span class="n">hist</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">mx</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="n">bl</span><span class="o">=</span><span class="n">bg0</span><span class="o">+</span><span class="n">step</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;fit_slopes&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">sigma</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;get_hpge_E_peak_par_guess: sigma estimation failed&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span><span class="o">*</span><span class="mf">.5</span> <span class="c1"># roughly remove some amount due to tail</span>
+
+        <span class="c1"># for now hard-coded</span>
+        <span class="n">htail</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="mi">5</span>
+        <span class="n">tau</span> <span class="o">=</span> <span class="mf">6.</span><span class="o">*</span><span class="n">sigma</span>
+
+        <span class="c1"># now compute amp and return</span>
+        <span class="n">height</span> <span class="o">-=</span> <span class="p">(</span><span class="n">bg0</span> <span class="o">+</span> <span class="n">step</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">amp</span> <span class="o">=</span> <span class="n">height</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+        <span class="n">hstep</span> <span class="o">=</span> <span class="n">step</span><span class="o">/</span><span class="n">amp</span>
+
+        <span class="c1"># convert to wrapped parameters</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">amp</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">htail</span><span class="p">)</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="n">amp</span><span class="o">*</span><span class="n">hstep</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">amp</span><span class="o">*</span><span class="n">htail</span>
+
+        <span class="n">parguess</span> <span class="o">=</span> <span class="p">[</span><span class="n">A</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">bg0</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">tau</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">parguess</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;get_hpge_E_peak_par_guess not implemented for </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[]</span></div>
 
 <div class="viewcode-block" id="get_hpge_E_peak_bounds"><a class="viewcode-back" href="../../../pygama.analysis.html#pygama.analysis.calibration.get_hpge_E_peak_bounds">[docs]</a><span class="k">def</span> <span class="nf">get_hpge_E_peak_bounds</span><span class="p">(</span><span class="n">hist</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">pars_guess</span><span class="p">):</span>
-    <span class="k">if</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns: Sequence of (min, max) pairs for each element in x.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">pars_guess</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;non-zero pars_guess must be passed to get_hpge_E_peak_bounds&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">func</span> <span class="o">==</span> <span class="n">pgf</span><span class="o">.</span><span class="n">gauss_step</span><span class="p">:</span>
+        <span class="c1"># pars are: amp, mu, sigma, bkg, step</span>
+        <span class="n">amp</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">bkg</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">pars_guess</span>
+
+        <span class="n">ampLims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="o">*</span><span class="n">amp</span><span class="p">]</span>
+        <span class="n">muLims</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span> <span class="o">-</span> <span class="mi">10</span><span class="o">*</span><span class="n">sigma</span><span class="p">,</span> <span class="n">mu</span> <span class="o">+</span> <span class="mi">10</span><span class="o">*</span><span class="n">sigma</span><span class="p">]</span>
+        <span class="n">sigmaLims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">sigma</span><span class="p">]</span>
+        <span class="n">bkgLims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">amp</span><span class="p">]</span>
+        <span class="n">stepLims</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">amp</span><span class="p">,</span> <span class="n">amp</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ampLims</span><span class="p">,</span> <span class="n">muLims</span><span class="p">,</span> <span class="n">sigmaLims</span><span class="p">,</span> <span class="n">bkgLims</span><span class="p">,</span> <span class="n">stepLims</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">func</span> <span class="o">==</span> <span class="n">pgf</span><span class="o">.</span><span class="n">radford_peak_wrapped</span><span class="p">:</span>
+
+        <span class="c1"># pars are: A, mu, sigma, bg0, S, T, tau</span>
+        <span class="n">A</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">bg0</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">tau</span> <span class="o">=</span> <span class="n">pars_guess</span>
+
+        <span class="n">ALims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="o">*</span><span class="n">A</span><span class="p">]</span>
+        <span class="n">muLims</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span> <span class="o">-</span> <span class="mi">10</span><span class="o">*</span><span class="n">sigma</span><span class="p">,</span> <span class="n">mu</span> <span class="o">+</span> <span class="mi">10</span><span class="o">*</span><span class="n">sigma</span><span class="p">]</span>
+        <span class="n">sigmaLims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">sigma</span><span class="p">]</span>
+        <span class="n">bg0Lims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">A</span><span class="p">]</span>
+        <span class="n">SLims</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">A</span><span class="p">,</span> <span class="mi">5</span><span class="o">*</span><span class="n">A</span><span class="p">]</span>
+        <span class="n">TLims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="o">*</span><span class="n">A</span><span class="p">]</span>
+        <span class="n">tauLims</span> <span class="o">=</span> <span class="p">[</span><span class="n">sigma</span><span class="p">,</span> <span class="mi">100</span><span class="o">*</span><span class="n">sigma</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ALims</span><span class="p">,</span> <span class="n">muLims</span><span class="p">,</span> <span class="n">sigmaLims</span><span class="p">,</span> <span class="n">bg0Lims</span><span class="p">,</span> <span class="n">SLims</span><span class="p">,</span> <span class="n">TLims</span><span class="p">,</span> <span class="n">tauLims</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;get_hpge_E_peak_bounds not implemented for </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="k">return</span> <span class="kc">None</span></div>
@@ -818,7 +891,6 @@
         <span class="k">if</span> <span class="n">n_close_i</span> <span class="o">&gt;=</span> <span class="n">n_close</span><span class="p">:</span>
             <span class="n">gof_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">polxx</span><span class="p">[</span><span class="n">matches</span><span class="p">]</span> <span class="o">-</span> <span class="n">yy_i</span><span class="p">[</span><span class="n">matches</span><span class="p">],</span> <span class="mi">2</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">n_close_i</span> <span class="o">&gt;</span> <span class="n">n_close</span> <span class="ow">or</span> <span class="p">(</span><span class="n">n_close_i</span> <span class="o">==</span> <span class="n">n_close</span> <span class="ow">and</span> <span class="n">gof_i</span> <span class="o">&lt;</span> <span class="n">gof</span><span class="p">):</span>
-                <span class="n">i_matches</span> <span class="o">=</span> <span class="n">ixtup</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">matches</span><span class="p">)]</span>
                 <span class="n">n_close</span> <span class="o">=</span> <span class="n">n_close_i</span>
                 <span class="n">gof</span> <span class="o">=</span> <span class="n">gof_i</span>
                 <span class="n">pars</span> <span class="o">=</span> <span class="n">pars_i</span>

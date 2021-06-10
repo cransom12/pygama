@@ -599,6 +599,18 @@
         <span class="c1"># return individually to make a pretty plot</span>
         <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">htail</span><span class="p">),</span> <span class="n">gauss</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">a</span><span class="p">),</span> <span class="n">bg_term</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">le_tail</span></div>
 
+<div class="viewcode-block" id="radford_peak_wrapped"><a class="viewcode-back" href="../../../pygama.analysis.html#pygama.analysis.peak_fitting.radford_peak_wrapped">[docs]</a><span class="k">def</span> <span class="nf">radford_peak_wrapped</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">bkg</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">components</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A wrapped version of David Radford&#39;s HPGe peak shape function, such that</span>
+<span class="sd">    the argument order and definition follows gauss_step</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">a</span> <span class="o">=</span> <span class="n">A</span> <span class="o">+</span> <span class="n">T</span>
+    <span class="n">htail</span> <span class="o">=</span> <span class="n">T</span> <span class="o">/</span> <span class="n">a</span>
+    <span class="n">hstep</span> <span class="o">=</span> <span class="n">S</span> <span class="o">/</span> <span class="n">a</span>
+
+    <span class="k">return</span> <span class="n">radford_peak</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">hstep</span><span class="p">,</span> <span class="n">htail</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">bkg</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">components</span><span class="o">=</span><span class="n">components</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="radford_fwhm"><a class="viewcode-back" href="../../../pygama.analysis.html#pygama.analysis.peak_fitting.radford_fwhm">[docs]</a><span class="k">def</span> <span class="nf">radford_fwhm</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="n">htail</span><span class="p">,</span> <span class="n">tau</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the FWHM of the radford_peak function, ignoring background and</span>
@@ -619,14 +631,34 @@
         <span class="k">return</span> <span class="n">radford_peak</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">htail</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">half_max</span>
     
     <span class="n">lower_hm</span> <span class="o">=</span> <span class="n">brentq</span><span class="p">(</span> <span class="n">radford_peak_bgfree_halfmax</span><span class="p">,</span>
-                       <span class="n">Emax</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">sigma</span><span class="o">+</span><span class="n">htail</span><span class="p">),</span> <span class="n">Emax</span><span class="p">,</span>
+                       <span class="o">-</span><span class="p">(</span><span class="mf">2.5</span><span class="o">*</span><span class="n">sigma</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="n">htail</span><span class="o">*</span><span class="n">tau</span><span class="p">),</span> <span class="n">Emax</span><span class="p">,</span>
                        <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="n">htail</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">half_max</span><span class="p">)</span> <span class="p">)</span>
     <span class="n">upper_hm</span> <span class="o">=</span> <span class="n">brentq</span><span class="p">(</span> <span class="n">radford_peak_bgfree_halfmax</span><span class="p">,</span>
-                       <span class="n">Emax</span><span class="p">,</span> <span class="n">Emax</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">sigma</span><span class="o">+</span><span class="n">htail</span><span class="p">),</span>
+                       <span class="n">Emax</span><span class="p">,</span> <span class="mf">2.5</span><span class="o">*</span><span class="n">sigma</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
                        <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="n">htail</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">half_max</span><span class="p">)</span> <span class="p">)</span>
     
     <span class="k">return</span> <span class="n">upper_hm</span> <span class="o">-</span> <span class="n">lower_hm</span></div>
-    
+
+<div class="viewcode-block" id="get_fwhm_func"><a class="viewcode-back" href="../../../pygama.analysis.html#pygama.analysis.peak_fitting.get_fwhm_func">[docs]</a><span class="k">def</span> <span class="nf">get_fwhm_func</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">pars</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">func</span> <span class="o">==</span> <span class="n">gauss_step</span><span class="p">:</span>
+        <span class="n">amp</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">bkg</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">pars</span>
+        <span class="k">return</span> <span class="n">sigma</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">func</span> <span class="o">==</span> <span class="n">radford_peak</span><span class="p">:</span>
+        <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">hstep</span><span class="p">,</span> <span class="n">htail</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">bg0</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">pars</span>
+        <span class="k">return</span> <span class="n">radford_fwhm</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="n">htail</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">func</span> <span class="o">==</span> <span class="n">radford_peak_wrapped</span><span class="p">:</span>
+        <span class="n">A</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">bg0</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">tau</span> <span class="o">=</span> <span class="n">pars</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">A</span> <span class="o">+</span> <span class="n">T</span>
+        <span class="n">htail</span> <span class="o">=</span> <span class="n">T</span> <span class="o">/</span> <span class="n">a</span>
+        <span class="n">hstep</span> <span class="o">=</span> <span class="n">S</span> <span class="o">/</span> <span class="n">a</span>
+        <span class="n">newpars</span> <span class="o">=</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">hstep</span><span class="p">,</span> <span class="n">htail</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">bg0</span><span class="p">,</span> <span class="n">a</span>
+        <span class="k">return</span> <span class="n">get_fwhm_func</span><span class="p">(</span><span class="n">radford_peak</span><span class="p">,</span> <span class="n">newpars</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;get_fwhm_func not implemented for </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
     
 <div class="viewcode-block" id="gauss_tail"><a class="viewcode-back" href="../../../pygama.analysis.html#pygama.analysis.peak_fitting.gauss_tail">[docs]</a><span class="k">def</span> <span class="nf">gauss_tail</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">tail</span><span class="p">,</span><span class="n">tau</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
