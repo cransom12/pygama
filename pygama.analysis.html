@@ -1123,7 +1123,12 @@ default.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pygama.analysis.peak_fitting.get_fwhm_func">
-<span class="sig-prename descclassname"><span class="pre">pygama.analysis.peak_fitting.</span></span><span class="sig-name descname"><span class="pre">get_fwhm_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygama/analysis/peak_fitting.html#get_fwhm_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygama.analysis.peak_fitting.get_fwhm_func" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pygama.analysis.peak_fitting.</span></span><span class="sig-name descname"><span class="pre">get_fwhm_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygama/analysis/peak_fitting.html#get_fwhm_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygama.analysis.peak_fitting.get_fwhm_func" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygama.analysis.peak_fitting.get_mu_func">
+<span class="sig-prename descclassname"><span class="pre">pygama.analysis.peak_fitting.</span></span><span class="sig-name descname"><span class="pre">get_mu_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygama/analysis/peak_fitting.html#get_mu_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygama.analysis.peak_fitting.get_mu_func" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -1186,10 +1191,15 @@ it here.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pygama.analysis.peak_fitting.radford_fwhm">
-<span class="sig-prename descclassname"><span class="pre">pygama.analysis.peak_fitting.</span></span><span class="sig-name descname"><span class="pre">radford_fwhm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">htail</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygama/analysis/peak_fitting.html#radford_fwhm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygama.analysis.peak_fitting.radford_fwhm" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pygama.analysis.peak_fitting.</span></span><span class="sig-name descname"><span class="pre">radford_fwhm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">htail</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygama/analysis/peak_fitting.html#radford_fwhm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygama.analysis.peak_fitting.radford_fwhm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the FWHM of the radford_peak function, ignoring background and
 step components. TODO: also get the uncertainty</p>
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygama.analysis.peak_fitting.radford_parameter_gradient">
+<span class="sig-prename descclassname"><span class="pre">pygama.analysis.peak_fitting.</span></span><span class="sig-name descname"><span class="pre">radford_parameter_gradient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygama/analysis/peak_fitting.html#radford_parameter_gradient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygama.analysis.peak_fitting.radford_parameter_gradient" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pygama.analysis.peak_fitting.radford_peak">
@@ -1203,6 +1213,11 @@ step components. TODO: also get the uncertainty</p>
 <dd><p>A wrapped version of David Radford's HPGe peak shape function, such that
 the argument order and definition follows gauss_step</p>
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygama.analysis.peak_fitting.radford_peakshape_derivative">
+<span class="sig-prename descclassname"><span class="pre">pygama.analysis.peak_fitting.</span></span><span class="sig-name descname"><span class="pre">radford_peakshape_derivative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygama/analysis/peak_fitting.html#radford_peakshape_derivative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygama.analysis.peak_fitting.radford_peakshape_derivative" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pygama.analysis.peak_fitting.step">
